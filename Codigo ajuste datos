@@ -93,6 +93,48 @@ plt.ylabel('Abs(nm)')
 plt.plot(tt[18:31],od[18:31],label='OD A3 Glucosa')
 plt.legend(loc='lower right')
 
+#Tasa de crecimiento
+##Se ve mejor con np.diff, que con UnivariateSpline
+print('A=%e'%(A))
+print('um=%e'%(um))
+print('l=%e'%(l))
+y=((A*np.exp(-np.exp((((um*np.exp(1))/A)*(l-tt))+1))))
+#Con diff
+dy=np.diff(y)
+plt.figure()
+plt.title('GR diff')
+plt.xlabel('tiempo(min)')
+plt.ylabel('gr')
+plt.axvspan(tm,tm, color='k', alpha=0.5)
+plt.plot(tt[:-1],dy,'.',label='growth rate')
+plt.legend(loc='lower right')
+
+#con spline e y=((A*np.exp(-np.exp((((um*np.exp(1))/A)*(l-tt))+1))))
+spl=UnivariateSpline(tt,y)
+spl.set_smoothing_factor(1e-3)
+dydtt=spl.derivative(1)(tt)
+plt.figure()
+plt.title('GR formula gompertz')
+plt.xlabel('tiempo(min)')
+plt.ylabel('gr')
+plt.axvspan(tm,tm, color='k', alpha=0.5)
+plt.plot(tt,dydtt,'.',label='growth rate')
+plt.legend(loc='lower right')
+
+#con spline e y2=np.log(od)-np.log(np.min(od))
+y2=np.log(od)-np.log(np.min(od))
+spl2=UnivariateSpline(tt,y2)
+spl2.set_smoothing_factor(1e-1)
+dydt2=spl2.derivative(1)(tt)
+plt.figure()
+plt.title('GR ln(od/od0)')
+plt.xlabel('tiempo(min)')
+plt.ylabel('gr')
+plt.axvspan(tm,tm, color='k', alpha=0.5)
+plt.plot(tt,dydt2,'.',label='growth rate')
+plt.legend(loc='lower right')
+
+
 #Selección de datos en arrays, según lo determinado
 c=cfp[18:31]
 r=rfp[18:31]
