@@ -1,3 +1,0 @@
-# Tesis
-Códigos
-ccd
